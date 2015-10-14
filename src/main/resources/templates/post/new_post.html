@@ -1,16 +1,16 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Getting Started: Handling Form Submission</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<h1>Form</h1>
-<form action="#" th:action="@{/newpost}" th:object="${post}" method="post">
-    <p>Title: <input type="text" th:field="*{title}" /></p>
-    <p>Content: <input type="text" th:field="*{content}" /></p>
-    <p>Category ID: <input type="text" th:field="*{categoryId}" /></p>
-    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+
+<h1>Création d'un nouveau post</h1>
+<form action="#" th:action="@{/newpost}" th:object="${post}" method="post" xmlns:th="http://www.w3.org/1999/xhtml">
+    <label>Title : <input type="text" th:field="*{title}"/></label><br/>
+    <label>Content : <input type="text" th:field="*{content}"/></label><br/>
+
+    <label>Catégorie :
+        <select name="category_id" th:field="*{categoryId}">
+            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">1</option>
+        </select>
+    </label><br/>
+
+
+    <p><input type="submit" value="Envoyer"/> <input type="reset" value="Réinitialiser"/></p>
 </form>
-</body>
-</html>

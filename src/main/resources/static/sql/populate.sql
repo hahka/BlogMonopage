@@ -1,0 +1,1 @@
+INSERT INTO CATEGORIES(name) VALUES ('Voyage'),('Cuisine');

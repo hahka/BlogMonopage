@@ -15,7 +15,6 @@ public class Post {
     private String content;
     private Image image;
     private Date date;
-    private String getId;
 
     public Post() {
     }

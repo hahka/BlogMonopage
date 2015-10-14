@@ -1,5 +1,6 @@
 package demo.post;
 
+import demo.category.CategoryDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,13 @@ public class PostController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    CategoryDao categoryDao;
 
     @ModelAttribute("posts")
-    public List<Post> getPostsList() {
-        return jdbcTemplate.query("SELECT id, title, content FROM posts", new BeanPropertyRowMapper(Post.class));
-        //return null;
+    public List getPostsList() {
+        return jdbcTemplate.query(
+                "SELECT id, title, content FROM posts ORDER BY date DESC", new BeanPropertyRowMapper(Post.class));
     }
 
 
@@ -39,15 +42,20 @@ public class PostController {
 
     @RequestMapping(value="/newpost", method=RequestMethod.GET)
     public String newPostForm(Model model) {
+
         model.addAttribute("post", new Post());
+        model.addAttribute("categories", categoryDao.getCategories());
+
         return "post/new_post";
     }
+
     @RequestMapping(value = "/newpost", method = RequestMethod.POST)
     public @ResponseBody
     Post newPostSubmit(@ModelAttribute Post post) {
 
         jdbcTemplate.update(
-                "INSERT INTO posts(title) VALUES (?)", new Object[]{post.getTitle()});
+                "INSERT INTO posts(title, content, category_id) VALUES (?, ?, ?)",
+                post.getTitle(), post.getContent(), post.getCategoryId());
 
         return post;
         //return null;

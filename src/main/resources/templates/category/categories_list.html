@@ -1,0 +1,12 @@
+<table xmlns:th="http://www.w3.org/1999/xhtml">
+    <thead>
+    <tr>
+        <th>Liste des catégories</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--@thymesVar id="categories" type="Category[]"-->
+    <tr th:each="category : ${categories}" th:include="category/category_item :: category_item">
+    </tr>
+    </tbody>
+</table>
