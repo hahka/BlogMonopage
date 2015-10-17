@@ -4,7 +4,6 @@ import demo.category.CategoryDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 @Controller
 public class PostController {
@@ -26,15 +23,12 @@ public class PostController {
     @Autowired
     CategoryDao categoryDao;
 
-    @ModelAttribute("posts")
-    public List getPostsList() {
-        return jdbcTemplate.query(
-                "SELECT id, title, content FROM posts ORDER BY date DESC", new BeanPropertyRowMapper(Post.class));
-    }
-
+    @Autowired
+    PostDao postDao;
 
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public String getPostsListView(Model model) {
+        model.addAttribute("posts", postDao.getPosts());
         return "post/posts_list";
     }
 

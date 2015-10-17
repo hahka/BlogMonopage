@@ -1,0 +1,12 @@
+<table xmlns:th="http://www.w3.org/1999/xhtml">
+    <thead>
+    <tr>
+        <th>Liste des utilisateurs</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--@thymesVar id="posts" type="Post[]"-->
+    <tr th:each="user : ${users}" th:include="user/user_item :: user_item">
+    </tr>
+    </tbody>
+</table>
