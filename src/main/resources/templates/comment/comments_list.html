@@ -1,0 +1,12 @@
+<table xmlns:th="http://www.w3.org/1999/xhtml">
+    <thead>
+    <tr>
+        <th>Liste des commentaires</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--@thymesVar id="posts" type="Post[]"-->
+    <tr th:each="comment : ${comments}" th:include="comment/comment_item :: comment_item">
+    </tr>
+    </tbody>
+</table>

@@ -6,6 +6,8 @@ CREATE SEQUENCE IF NOT EXISTS roles_id_seq;
 
 CREATE SEQUENCE IF NOT EXISTS users_id_seq;
 
+CREATE SEQUENCE IF NOT EXISTS comments_id_seq;
+
 CREATE TABLE IF NOT EXISTS categories (
    name        character      varying,
    category_id integer        REFERENCES categories(id),
@@ -30,5 +32,15 @@ CREATE TABLE IF NOT EXISTS posts (
    title       character      varying(64),
    id          integer        default posts_id_seq.nextval NOT NULL PRIMARY KEY,
    image       bytea
+);
+
+
+CREATE TABLE IF NOT EXISTS comments (
+   id          integer        default comments_id_seq.nextval NOT NULL PRIMARY KEY,
+   content     text,
+   post_id     integer        REFERENCES posts(id),
+   user_id     integer        REFERENCES users(id),
+   date        date,
+   validated   boolean
 );
 
