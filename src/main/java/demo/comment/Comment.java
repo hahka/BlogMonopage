@@ -15,12 +15,18 @@ public class Comment {
     private long userId;
 
 
+
     public Comment() {
     }
 
     public Comment(long id, String content) {
         this.id = id;
         this.content = content;
+    }
+
+    public Comment(String content, long postId) {
+        setPostId(postId);
+        setContent(content);
     }
 
     public long getId() {

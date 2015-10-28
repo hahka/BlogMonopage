@@ -5,7 +5,7 @@
 
 <div th:fragment="post_item">
     <td th:text="${post.id}">1</td>
-    <td th:text="${post.title}">Un simple post</td>
+    <a th:text="${post.title}" th:id="${post.id}" ng-click="postDetails($event)">Un simple post</a>
     <td th:text="${post.categoryName}">Voyage</td>
     <td th:text="${post.content}">Blablabla blablabla</td>
 </div>

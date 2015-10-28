@@ -117,9 +117,14 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
 
             appScopes.store('MainController', $scope);
 
-            $http.get('/posts').success(function (data) {
+            /*$http.get('/posts').success(function (data) {
                 data = $sce.trustAsHtml(data);
                 $scope.mainView = data;
+             });*/
+            myServiceAsync.getHTML.setUrl("posts");
+            var myDataPromise = myServiceAsync.getHTML();
+            myDataPromise.then(function (result) {  // this is only run after $http completes
+                $scope.mainDynamic = result;
             });
 
             $scope.addNewPostForm = function () {
@@ -132,16 +137,32 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
 
             };
 
-            $scope.addNewPost = function () {
-                $window.alert("oto");
+            $scope.postDetails = function (e) {
+
+                myServiceAsync.getHTML.setUrl("postdetails/" + $(e.target).attr("id"));
+                var myDataPromise = myServiceAsync.getHTML();
+                myDataPromise.then(function (result) {  // this is only run after $http completes
+                    $scope.mainDynamic = result;
+                });
+
             }
+
+            $scope.addNewPostComment = function (e) {
+
+                myServiceAsync.getHTML.setUrl("newcomment/" + $(e.target).attr("id"));
+                var myDataPromise = myServiceAsync.getHTML();
+                myDataPromise.then(function (result) {  // this is only run after $http completes
+                    $scope.mainDynamic = result;
+                });
+
+            };
 
         }]
 );
 
 monoBlogControllers.controller('NewPostController',
-    ['$scope', '$rootScope', '$window', '$http', '$sce', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
-        function ($scope, $rootScope, $window, $http, $sce, transformRequestAsFormPost, appScopes, myServiceAsync) {
+    ['$scope', '$rootScope', '$http', '$sce', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
+        function ($scope, $rootScope, $http, $sce, transformRequestAsFormPost, appScopes, myServiceAsync) {
             $scope.submit = function () {
 
                 var title = $scope.form.title;
@@ -149,7 +170,6 @@ monoBlogControllers.controller('NewPostController',
                 var content = $scope.form.content;
                 if (title && content && categoryId) {
 
-                    //$window.alert($scope.form);
                     var req = {
                         method: 'POST',
                         url: 'newpostNg',
@@ -162,20 +182,62 @@ monoBlogControllers.controller('NewPostController',
                     }
                     $http(req).then(
                         function successCallback(response) {
-                            // this callback will be called asynchronously
-                            // when the response is available
-                            $http.get('/posts').success(function (data) {
-                                data = $sce.trustAsHtml(data);
 
-                                myServiceAsync.getHTML.setUrl("posts");
-                                var myDataPromise = myServiceAsync.getHTML();
-                                myDataPromise.then(function (result) {  // this is only run after $http completes
-                                    appScopes.get('MainController').mainDynamic = result;
-                                });
+                            myServiceAsync.getHTML.setUrl("posts");
+                            var myDataPromise = myServiceAsync.getHTML();
+                            myDataPromise.then(function (result) {  // this is only run after $http completes
+                                appScopes.get('MainController').mainDynamic = result;
                             });
+
                         }, function errorCallback(response) {
-                            // this callback will be called asynchronously
-                            // when the response is available
+                        });
+
+                } else {
+                    $window.alert("ko");
+                }
+
+            };
+        }]
+);
+
+
+monoBlogControllers.controller('NewCommentController',
+    ['$scope', '$rootScope', '$http', '$sce', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
+        function ($scope, $rootScope, $http, $sce, transformRequestAsFormPost, appScopes, myServiceAsync) {
+            $scope.submit = function (e) {
+
+                var content = $scope.form.content;
+                if (content) {
+
+                    var req = {
+                        method: 'POST',
+                        url: 'newcommentNg',
+                        transformRequest: transformRequestAsFormPost,
+                        data: {
+                            content: content,
+                            postId: $(e.target).attr("id"),
+                            userId: null,
+                            date: null,
+                            validated: null
+                        }
+                    }
+                    $http(req).then(
+                        function successCallback(response) {
+
+                            myServiceAsync.getHTML.setUrl("postdetails/" + $(e.target).attr("id"));
+                            var myDataPromise = myServiceAsync.getHTML();
+                            myDataPromise.then(function (result) {  // this is only run after $http completes
+                                appScopes.get('MainController').mainDynamic = result;
+                            });
+
+                        }, function errorCallback(response) {
+
+                            myServiceAsync.getHTML.setUrl("postdetails/" + $(e.target).attr("id"));
+                            var myDataPromise = myServiceAsync.getHTML();
+                            myDataPromise.then(function (result) {  // this is only run after $http completes
+                                appScopes.get('MainController').mainDynamic = result;
+                            });
+
                         });
 
                 } else {

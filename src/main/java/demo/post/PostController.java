@@ -1,16 +1,14 @@
 package demo.post;
 
 import demo.category.CategoryDao;
+import demo.comment.CommentDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -33,11 +31,22 @@ public class PostController {
     @Autowired
     PostDao postDao;
 
+    @Autowired
+    CommentDao commentDao;
+
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public String getPostsListView(Model model) {
         model.addAttribute("posts", postDao.getPosts());
         //System.out.println(postDao.getPosts());
         return "post/posts_list";
+    }
+
+    @RequestMapping(value = "/postdetails/{id}", method = RequestMethod.GET)
+    public String getPostDetailsView(@PathVariable Integer id, Model model) {
+        model.addAttribute("post", postDao.getPostById(id));
+        model.addAttribute("comments", commentDao.getCommentsByPostId(id));
+        //System.out.println(postDao.getPosts());
+        return "post/post_details";
     }
 
 

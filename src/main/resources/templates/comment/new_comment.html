@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+
+<h1>Ajout commentaire</h1>
+
+
+<form th:id="${comment.postId}" ng-submit="submit($event)" ng-controller="NewCommentController"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <div class="row">
+        <div class="large-12 columns">
+            <label>Content :
+                <input ng-model="form.content" type="text"/>
+            </label>
+        </div>
+    </div>
+
+    <p><input type="submit" id="submit" value="Envoyer"/> <input type="reset" value="Réinitialiser"/></p>
+</form>

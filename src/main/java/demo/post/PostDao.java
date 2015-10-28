@@ -28,5 +28,14 @@ public class PostDao {
                         "ORDER BY date DESC", new BeanPropertyRowMapper(Post.class));
     }
 
+    public Post getPostById(int id) {
+        return (Post) jdbcTemplate.query(
+                "SELECT p.id, p.title, p.content, c.name as categoryName " +
+                        "FROM posts p INNER JOIN categories c ON p.category_id = c.id " +
+                        "WHERE p.id = ?",
+                new Object[]{id},
+                new BeanPropertyRowMapper(Post.class)).get(0);
+    }
+
 
 }
