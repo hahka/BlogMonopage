@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="hello" ng-controller="MainController">
 <head>
 
     <meta charset="UTF-8"/>
@@ -15,41 +15,16 @@
 
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/authentication.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-sanitize.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
+
+
+    <script src="js/mono-blog-controllers.js"></script>
+
     <script>
-        $(document).ready(
-                function () {
-                    console.log("ready");
-
-                    $.ajax({
-                        url: "posts",
-                        method: "GET",
-                        success: function (data) {
-                            //console.log(data);
-                            $("main").html(data);
-                        }
-                    });
-
-
-                    $("#add_post_button").click(
-                            function () {
-                                console.log("click");
-
-                                $.ajax({
-                                    url: "newpost",
-                                    method: "GET",
-                                    success: function (data) {
-                                        console.log(data);
-
-                                        $("main").html(data);
-                                    }
-                                });
-                            }
-                    )
-
-                }
-
-        );
-
+        var app = angular.module('hello', ['ngSanitize', 'ngRoute', 'monoBlogControllers']);
 
     </script>
 
@@ -62,14 +37,15 @@
 
 <section id="user_info">
     <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+
 </section>
 
-<div class="button" id="add_post_button">Ajouter un nouveau post</div>
+<div class="button" id="add_post_button_ng" ng-click="addNewPostForm()">Ajouter un nouveau post</div>
 
-<main class="row">
-
+<main class="row ng-cloak" ng-cloak ng-bind-html="mainView" dynamic="mainDynamic">
 
 </main>
+
 
 <footer></footer>
 

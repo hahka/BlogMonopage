@@ -23,7 +23,9 @@ public class PostDao {
 
     public List getPosts() {
         return jdbcTemplate.query(
-                "SELECT id, title, content FROM posts ORDER BY date DESC", new BeanPropertyRowMapper(Post.class));
+                "SELECT p.id, p.title, p.content, c.name as categoryName " +
+                        "FROM posts p INNER JOIN categories c ON p.category_id = c.id " +
+                        "ORDER BY date DESC", new BeanPropertyRowMapper(Post.class));
     }
 
 

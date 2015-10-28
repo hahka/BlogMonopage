@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS categories (
    category_id integer        REFERENCES categories(id),
    id          integer        default categories_id_seq.nextval NOT NULL PRIMARY KEY);
 
-CREATE TABLE IF NOT EXISTS role (
+CREATE TABLE IF NOT EXISTS roles (
    id          integer        default roles_id_seq.nextval NOT NULL PRIMARY KEY,
    name        character      varying);
 
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
    user_name   character      varying(32) NOT NULL,
    id          integer        default users_id_seq.nextval NOT NULL PRIMARY KEY,
    email       character      varying(64),
-   role_id     integer        NOT NULL REFERENCES users(id)
+   role_id     integer        NOT NULL REFERENCES roles(id)
 );
 
 CREATE TABLE IF NOT EXISTS posts (

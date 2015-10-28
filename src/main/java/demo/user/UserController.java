@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
@@ -24,8 +26,15 @@ public class UserController {
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String getUsersListView(Model model) {
-        model.addAttribute("posts", userDao.getUsers());
+        model.addAttribute("users", userDao.getUsers());
         return "user/users_list";
+    }
+
+    @RequestMapping(value = "/usersNg", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List getUsersNg() {
+        return userDao.getUsers();
     }
 
     @RequestMapping(value="/newuser", method=RequestMethod.GET)

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
 
 <div th:fragment="post_item">
-    <td th:text="${post.title}">John</td>
-    <td th:text="${post.id}">Smith</td>
+    <td th:text="${post.id}">1</td>
+    <td th:text="${post.title}">Un simple post</td>
+    <td th:text="${post.categoryName}">Voyage</td>
+    <td th:text="${post.content}">Blablabla blablabla</td>
 </div>
 
 </html>

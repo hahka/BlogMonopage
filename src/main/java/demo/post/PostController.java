@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+
 @Controller
 public class PostController {
 
@@ -29,7 +36,16 @@ public class PostController {
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public String getPostsListView(Model model) {
         model.addAttribute("posts", postDao.getPosts());
+        //System.out.println(postDao.getPosts());
         return "post/posts_list";
+    }
+
+
+    @RequestMapping(value = "/postsNg", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List getPostsListNg() {
+        return postDao.getPosts();
     }
 
 
@@ -54,6 +70,45 @@ public class PostController {
         return post;
         //return null;
     }
+
+    @RequestMapping(value = "/newpostNg", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Post newPostSubmit(HttpServletRequest request) {
+
+        StringBuffer postParams = new StringBuffer();
+        try {
+            BufferedReader reader = request.getReader();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                postParams.append(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String postParamsString = postParams.toString();
+
+        Map<String, String> postParamsMap = new LinkedHashMap<String, String>();
+        for (String keyValue : postParamsString.split(" *& *")) {
+            String[] pairs = keyValue.split(" *= *", 2);
+            postParamsMap.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
+        }
+
+        String title = postParamsMap.get("title");
+
+        long categoryId = Long.valueOf(postParamsMap.get("categoryId"));
+        String content = postParamsMap.get("content");
+
+
+        Post post = new Post(title, categoryId, content);
+        jdbcTemplate.update(
+                "INSERT INTO posts(title, content, category_id) VALUES (?, ?, ?)",
+                post.getTitle(), post.getContent(), post.getCategoryId());
+
+        return post;
+    }
+
 
 
 }

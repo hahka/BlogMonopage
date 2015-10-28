@@ -1,7 +1,6 @@
 <table xmlns:th="http://www.w3.org/1999/xhtml">
     <thead><tr><th>Derniers posts</th></tr></thead>
     <tbody>
-        <!--@thymesVar id="posts" type="Post[]"-->
         <tr th:each="post : ${posts}" th:include="post/post_item :: post_item">
         </tr>
     </tbody>

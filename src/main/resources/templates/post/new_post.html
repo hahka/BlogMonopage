@@ -1,12 +1,14 @@
 <!DOCTYPE HTML>
 
 <h1>Création d'un nouveau post</h1>
-<form action="#" th:action="@{/newpost}" th:object="${post}" method="post" xmlns:th="http://www.w3.org/1999/xhtml">
+
+
+<form ng-submit="submit()" ng-controller="NewPostController" xmlns:th="http://www.w3.org/1999/xhtml">
 
     <div class="row">
         <div class="large-12 columns">
-            <label>Titre :
-                <input type="text" th:field="*{title}"/>
+            <>Titre :
+            <input ng-model="form.title" type="text"/>
             </label>
         </div>
     </div>
@@ -14,7 +16,7 @@
     <div class="row">
         <div class="large-12 columns">
             <label>Catégorie :
-                <select name="category_id" th:field="*{categoryId}">
+                <select ng-model="form.categoryId" name="category_id">
                     <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">1
                     </option>
                 </select>
@@ -25,10 +27,10 @@
     <div class="row">
         <div class="large-12 columns">
             <label>Content :
-                <input type="text" th:field="*{content}"/>
+                <input ng-model="form.content" type="text"/>
             </label>
         </div>
     </div>
 
-    <p><input type="submit" value="Envoyer"/> <input type="reset" value="Réinitialiser"/></p>
+    <p><input type="submit" id="submit" value="Envoyer"/> <input type="reset" value="Réinitialiser"/></p>
 </form>

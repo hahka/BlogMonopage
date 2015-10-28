@@ -5,12 +5,15 @@ import java.sql.Date;
 
 /**
  * Created by thibautvirolle on 23/09/15.
+ * L'objet Post ne correspond pas à celui présent en base de données, mais à celui que l'on veut afficher sur le blog.
+ * Il faut donc qu'il contienne un champ categoryName, bien qu'il soit récupéré grace à une jointure SQL.
  */
 public class Post {
 
     private long id;
     private long userId;
     private long categoryId;
+    private String categoryName;
     private String title;
     private String content;
     private Image image;
@@ -25,11 +28,17 @@ public class Post {
         this.content = content;
     }
 
+    public Post(String title, long categoryId, String content) {
+        this.categoryId = categoryId;
+        this.title = title;
+        this.content = content;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "Post[id=%d, title='%s', content='%s']",
-                id, title, content);
+                "Post[id=%d, title='%s', content='%s', categoryName='%s']",
+                id, title, content, categoryName);
     }
 
     public long getId() {
@@ -54,6 +63,14 @@ public class Post {
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getTitle() {
