@@ -1,102 +1,5 @@
 var monoBlogControllers = angular.module('monoBlogControllers', []);
 
-monoBlogControllers.service('myService', function ($http) {
-    var result;
-    return {
-        getHTML: function () {
-            return $http({
-                method: 'GET',
-                url: 'newpost'
-            }).success(function (data) {
-                result = data;
-            });
-        }
-    };
-});
-
-
-monoBlogControllers.factory('myServiceAsync', function ($http) {
-
-    var urlCall = "posts";
-    var getHTML = function () {
-        return $http({method: "GET", url: urlCall}).then(function (result) {
-            return result.data;
-        });
-    };
-
-    getHTML.setUrl = function (url) {
-        urlCall = url;
-    }
-
-    return {getHTML: getHTML};
-});
-
-
-monoBlogControllers.factory('appScopes', function ($rootScope) {
-    var mem = {};
-
-    return {
-        store: function (key, value) {
-            mem[key] = value;
-        },
-        get: function (key) {
-            return mem[key];
-        }
-    };
-});
-
-// I provide a request-transformation method that is used to prepare the outgoing
-// request as a FORM post instead of a JSON packet.
-monoBlogControllers.factory(
-    "transformRequestAsFormPost",
-    function () {
-        // I prepare the request data for the form post.
-        function transformRequest(data, getHeaders) {
-            var headers = getHeaders();
-            headers["Content-type"] = "application/x-www-form-urlencoded; charset=utf-8";
-            return ( serializeData(data) );
-        }
-
-        // Return the factory value.
-        return ( transformRequest );
-        // ---
-        // PRVIATE METHODS.
-        // ---
-        // I serialize the given Object into a key-value pair string. This
-        // method expects an object and will default to the toString() method.
-        // --
-        // NOTE: This is an atered version of the jQuery.param() method which
-        // will serialize a data collection for Form posting.
-        // --
-        // https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
-        function serializeData(data) {
-            // If this is not an object, defer to native stringification.
-            if (!angular.isObject(data)) {
-                return ( ( data == null ) ? "" : data.toString() );
-            }
-            var buffer = [];
-            // Serialize each key in the object.
-            for (var name in data) {
-                if (!data.hasOwnProperty(name)) {
-                    continue;
-                }
-                var value = data[name];
-                buffer.push(
-                    encodeURIComponent(name) +
-                    "=" +
-                    encodeURIComponent(( value == null ) ? "" : value)
-                );
-            }
-            // Serialize the buffer and clean it up for transportation.
-            var source = buffer
-                    .join("&")
-                    .replace(/%20/g, "+")
-                ;
-            return ( source );
-        }
-    }
-);
-
 monoBlogControllers.directive('dynamic', function ($compile) {
     return {
         replace: true,
@@ -117,10 +20,6 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
 
             appScopes.store('MainController', $scope);
 
-            /*$http.get('/posts').success(function (data) {
-                data = $sce.trustAsHtml(data);
-                $scope.mainView = data;
-             });*/
             myServiceAsync.getHTML.setUrl("posts");
             var myDataPromise = myServiceAsync.getHTML();
             myDataPromise.then(function (result) {  // this is only run after $http completes
@@ -161,13 +60,14 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
 );
 
 monoBlogControllers.controller('NewPostController',
-    ['$scope', '$rootScope', '$http', '$sce', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
-        function ($scope, $rootScope, $http, $sce, transformRequestAsFormPost, appScopes, myServiceAsync) {
+    ['$scope', '$rootScope', '$http', '$sce', '$window', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
+        function ($scope, $rootScope, $http, $sce, $window, transformRequestAsFormPost, appScopes, myServiceAsync) {
             $scope.submit = function () {
 
                 var title = $scope.form.title;
                 var categoryId = $scope.form.categoryId;
                 var content = $scope.form.content;
+
                 if (title && content && categoryId) {
 
                     var req = {
@@ -179,13 +79,13 @@ monoBlogControllers.controller('NewPostController',
                             categoryId: categoryId,
                             content: content
                         }
-                    }
+                    };
                     $http(req).then(
                         function successCallback(response) {
 
                             myServiceAsync.getHTML.setUrl("posts");
                             var myDataPromise = myServiceAsync.getHTML();
-                            myDataPromise.then(function (result) {  // this is only run after $http completes
+                            myDataPromise.then(function (result) {
                                 appScopes.get('MainController').mainDynamic = result;
                             });
 
@@ -241,6 +141,49 @@ monoBlogControllers.controller('NewCommentController',
                         });
 
                 } else {
+                    $window.alert("ko");
+                }
+
+            };
+        }]
+);
+
+
+monoBlogControllers.controller('NewUserController',
+    ['$scope', '$rootScope', '$http', '$sce', '$window', 'transformRequestAsFormPost', 'myServiceAsync',
+        function ($scope, $rootScope, $http, $sce, $window, transformRequestAsFormPost, myServiceAsync) {
+            $scope.submit = function (e) {
+
+                var username = $scope.form.username;
+                var email = $window.userEmail;
+
+                if (username) {
+
+                    var req = {
+                        method: 'POST',
+                        url: 'newuserNg',
+                        transformRequest: transformRequestAsFormPost,
+                        data: {
+                            username: username,
+                            email: email
+                        }
+                    }
+                    $http(req).then(
+                        function successCallback(response) {
+
+                            myServiceAsync.getHTML.setUrl("userLoggedIn/" + email + ".email");
+                            var myDataPromise = myServiceAsync.getHTML();
+                            myDataPromise.then(function (result) {
+                                $('#user_info').html(result);
+                            });
+
+                        }, function errorCallback(response) {
+
+                        });
+
+                } else {
+                    $window.alert(username);
+                    $window.alert(email);
                     $window.alert("ko");
                 }
 

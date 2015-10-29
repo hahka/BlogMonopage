@@ -29,13 +29,23 @@ public class PostDao {
     }
 
     public Post getPostById(int id) {
-        return (Post) jdbcTemplate.query(
+        List posts = jdbcTemplate.query(
                 "SELECT p.id, p.title, p.content, c.name as categoryName " +
                         "FROM posts p INNER JOIN categories c ON p.category_id = c.id " +
                         "WHERE p.id = ?",
                 new Object[]{id},
-                new BeanPropertyRowMapper(Post.class)).get(0);
+                new BeanPropertyRowMapper(Post.class));
+
+        return (posts.size() > 0 ? (Post) posts.get(0) : null);
     }
+
+    public int insertPost(Post post) {
+        return jdbcTemplate.update(
+                "INSERT INTO posts(title, content, category_id) VALUES (?, ?, ?)",
+                post.getTitle(), post.getContent(), post.getCategoryId());
+    }
+
+
 
 
 }

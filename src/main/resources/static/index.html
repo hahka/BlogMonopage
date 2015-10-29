@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/foundation.min.css" />
     <link rel="stylesheet" href="css/app.css" />
 
-    <title>MonoBlog</title>
+    <title>Actu by ESIEA</title>
 
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/authentication.js"></script>
@@ -20,11 +20,16 @@
     <script src="js/angular-route.min.js"></script>
     <script src="js/angular-ui-router.min.js"></script>
 
+    <script src="js/foundation.min.js"></script>
+    <script src="js/foundation/foundation.abide.js"></script>
+
 
     <script src="js/mono-blog-controllers.js"></script>
+    <script src="js/mono-blog-factories.js"></script>
 
     <script>
-        var app = angular.module('hello', ['ngSanitize', 'ngRoute', 'monoBlogControllers']);
+        var userEmail = "";
+        var app = angular.module('hello', ['ngSanitize', 'ngRoute', 'monoBlogFactories', 'monoBlogControllers']);
 
     </script>
 
@@ -33,11 +38,10 @@
 
 <body>
 
-<header>Index du blog</header>
+<header>Actu by ESIEA</header>
 
-<section id="user_info">
+<section id="user_info" class="ng-cloak" ng-cloak dynamic="userLoginDynamic">
     <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-
 </section>
 
 <div class="button" id="add_post_button_ng" ng-click="addNewPostForm()">Ajouter un nouveau post</div>
@@ -61,6 +65,8 @@
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
 
+        userEmail = profile.getEmail();
+
         //console.log(googleUser.getAuthResponse());
 
         //console.log("ID Token: " + id_token);
@@ -70,10 +76,24 @@
             //url: "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=ubkbb",
             method: "GET",
             success: function(data){
-                if (verifyAuthentication(data))
-                    console.log(" - User connected - ");
-                else
+
+                if (verifyAuthentication(data)) {
+                    $.ajax({
+                        url: "newuser/" + userEmail + ".mail",
+                        method: "GET",
+                        success: function (data) {
+                            var $targetDom = $("#user_info");
+                            AngularHelper.Compile($targetDom, data);
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("ko");
+                        }
+                    });
+
+                }
+                else {
                     googleUser.disconnect();
+                }
 
 
                 //googleUser.disconnect();
@@ -92,6 +112,38 @@
         // appID : 307924988327
     };
 
+    /**
+     * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive
+     */
+    var AngularHelper = (function () {
+        var AngularHelper = function () {
+        };
+
+        /**
+         * ApplicationName : Default application name for the helper
+         */
+        var defaultApplicationName = "hello";
+
+        /**
+         * Compile : Compile html with the rootScope of an application
+         *  and replace the content of a target element with the compiled html
+         * @$targetDom : The dom in which the compiled html should be placed
+         * @htmlToCompile : The html to compile using angular
+         * @applicationName : (Optionnal) The name of the application (use the default one if empty)
+         */
+        AngularHelper.Compile = function ($targetDom, htmlToCompile, applicationName) {
+            var $injector = angular.injector(["ng", applicationName || defaultApplicationName]);
+
+            $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
+                //Get the scope of the target, use the rootScope if it does not exists
+                var $scope = $targetDom.html(htmlToCompile).scope();
+                $compile($targetDom)($scope || $rootScope);
+                $rootScope.$digest();
+            }]);
+        }
+
+        return AngularHelper;
+    })();
 
 </script>
 

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -26,10 +25,10 @@ public class PostController {
     JdbcTemplate jdbcTemplate;
 
     @Autowired
-    CategoryDao categoryDao;
+    PostDao postDao;
 
     @Autowired
-    PostDao postDao;
+    CategoryDao categoryDao;
 
     @Autowired
     CommentDao commentDao;
@@ -37,7 +36,6 @@ public class PostController {
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public String getPostsListView(Model model) {
         model.addAttribute("posts", postDao.getPosts());
-        //System.out.println(postDao.getPosts());
         return "post/posts_list";
     }
 
@@ -45,19 +43,8 @@ public class PostController {
     public String getPostDetailsView(@PathVariable Integer id, Model model) {
         model.addAttribute("post", postDao.getPostById(id));
         model.addAttribute("comments", commentDao.getCommentsByPostId(id));
-        //System.out.println(postDao.getPosts());
         return "post/post_details";
     }
-
-
-    @RequestMapping(value = "/postsNg", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    List getPostsListNg() {
-        return postDao.getPosts();
-    }
-
-
 
     @RequestMapping(value="/newpost", method=RequestMethod.GET)
     public String newPostForm(Model model) {
@@ -72,12 +59,8 @@ public class PostController {
     public @ResponseBody
     Post newPostSubmit(@ModelAttribute Post post) {
 
-        jdbcTemplate.update(
-                "INSERT INTO posts(title, content, category_id) VALUES (?, ?, ?)",
-                post.getTitle(), post.getContent(), post.getCategoryId());
-
+        postDao.insertPost(post);
         return post;
-        //return null;
     }
 
     @RequestMapping(value = "/newpostNg", method = RequestMethod.POST)
@@ -105,15 +88,12 @@ public class PostController {
         }
 
         String title = postParamsMap.get("title");
-
         long categoryId = Long.valueOf(postParamsMap.get("categoryId"));
         String content = postParamsMap.get("content");
 
 
         Post post = new Post(title, categoryId, content);
-        jdbcTemplate.update(
-                "INSERT INTO posts(title, content, category_id) VALUES (?, ?, ?)",
-                post.getTitle(), post.getContent(), post.getCategoryId());
+        postDao.insertPost(post);
 
         return post;
     }
