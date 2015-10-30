@@ -40,8 +40,8 @@
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.15936255">
-              <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.17928287">
+              <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -1400,7 +1400,7 @@
       <workItem from="1445361412072" duration="2119000" />
       <workItem from="1445371630257" duration="4065000" />
       <workItem from="1445679471649" duration="41379000" />
-      <workItem from="1446062157193" duration="41397000" />
+      <workItem from="1446062157193" duration="41914000" />
     </task>
     <task id="LOCAL-00001" summary="- Création d'un CategoryDAO&#10;- Création d'un PropertiesReader&#10;- Création et remplissage de la base de donnée en local si H2 grâce à localhost:9000/create_default_db (exécute 2 scripts sql)&#10;- Récupération des catégories depuis le DAO pour la création de post">
       <created>1444860053697</created>
@@ -1448,7 +1448,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="177886000" />
+    <option name="totallyTimeSpent" value="178403000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -1975,8 +1975,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15936255">
-          <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.17928287">
+          <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
           <folding />
         </state>
       </provider>
