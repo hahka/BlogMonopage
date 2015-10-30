@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/*.jar demo.DemoApplication
+web:    java $JAVA_OPTS -cp target/classes:target/dependency/* demo.DemoApplication
