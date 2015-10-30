@@ -2,6 +2,7 @@ package demo.post;
 
 import java.awt.*;
 import java.sql.Date;
+import java.util.Calendar;
 
 /**
  * Created by thibautvirolle on 23/09/15.
@@ -12,6 +13,7 @@ public class Post {
 
     private long id;
     private long userId;
+    private String userName;
     private long categoryId;
     private String categoryName;
     private String title;
@@ -20,18 +22,21 @@ public class Post {
     private Date date;
 
     public Post() {
+        this.date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
     }
 
     public Post(long id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
     }
 
     public Post(String title, long categoryId, String content) {
         this.categoryId = categoryId;
         this.title = title;
         this.content = content;
+        this.date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
     }
 
     @Override
@@ -55,6 +60,14 @@ public class Post {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public long getCategoryId() {

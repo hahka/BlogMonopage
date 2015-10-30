@@ -76,7 +76,7 @@ monoBlogFactories.factory(
             // Serialize the buffer and clean it up for transportation.
             var source = buffer
                     .join("&")
-                    .replace(/%20/g, "+")
+            //.replace(/%20/g, "+")
                 ;
             return ( source );
         }

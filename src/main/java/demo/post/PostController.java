@@ -1,7 +1,10 @@
 package demo.post;
 
+import demo.Utils;
 import demo.category.CategoryDao;
 import demo.comment.CommentDao;
+import demo.user.Authentication;
+import demo.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,10 +37,69 @@ public class PostController {
     @Autowired
     CommentDao commentDao;
 
+    @Autowired
+    Authentication loggedInUser;
+
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public String getPostsListView(Model model) {
         model.addAttribute("posts", postDao.getPosts());
-        return "post/posts_list";
+        User user = loggedInUser.getLoggedInUser();
+
+
+        if (postDao.getPosts().size() > 0) {
+            if (user != null) {
+                if (user.getRoleId() == 1 || user.getRoleId() == 2) {
+                    return "post/posts_list_with_addition";
+                } else {
+                    return "post/posts_list";
+                }
+            } else {
+                return "post/posts_list";
+            }
+        } else {
+            if (user != null) {
+                if (user.getRoleId() == 1 || user.getRoleId() == 2) {
+                    return "post/posts_list_empty_with_addition";
+                } else {
+                    return "post/posts_list_empty";
+                }
+            } else {
+                return "post/posts_list_empty";
+            }
+        }
+
+    }
+
+
+    @RequestMapping(value = "/postsByUserId/{id}", method = RequestMethod.GET)
+    public String getPostsListByUserView(@PathVariable Integer id, Model model) {
+
+        model.addAttribute("posts", postDao.getPostsByUserId(id));
+        User user = loggedInUser.getLoggedInUser();
+
+
+        if (postDao.getPostsByUserId(id).size() > 0) {
+            if (user != null) {
+                if (user.getRoleId() == 1 || user.getRoleId() == 2) {
+                    return "post/posts_list_with_addition";
+                } else {
+                    return "post/posts_list";
+                }
+            } else {
+                return "post/posts_list";
+            }
+        } else {
+            if (user != null) {
+                if (user.getRoleId() == 1 || user.getRoleId() == 2) {
+                    return "post/posts_list_empty_with_addition";
+                } else {
+                    return "post/posts_list_empty";
+                }
+            } else {
+                return "post/posts_list_empty";
+            }
+        }
+
     }
 
     @RequestMapping(value = "/postdetails/{id}", method = RequestMethod.GET)
@@ -87,12 +150,22 @@ public class PostController {
             postParamsMap.put(pairs[0], pairs.length == 1 ? "" : pairs[1]);
         }
 
-        String title = postParamsMap.get("title");
-        long categoryId = Long.valueOf(postParamsMap.get("categoryId"));
-        String content = postParamsMap.get("content");
+        String title = null;
+        long categoryId = -1;
+        String content = null;
 
+        try {
+            title = Utils.uriDecoded(postParamsMap.get("title"));
+            categoryId = Long.valueOf(Utils.uriDecoded(postParamsMap.get("categoryId")));
+            content = Utils.uriDecoded(postParamsMap.get("content"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         Post post = new Post(title, categoryId, content);
+
+        if (loggedInUser.getLoggedInUser() != null)
+            post.setUserId(loggedInUser.getLoggedInUser().getId());
         postDao.insertPost(post);
 
         return post;

@@ -23,15 +23,19 @@ public class PostDao {
 
     public List getPosts() {
         return jdbcTemplate.query(
-                "SELECT p.id, p.title, p.content, c.name as categoryName " +
-                        "FROM posts p INNER JOIN categories c ON p.category_id = c.id " +
+                "SELECT p.id, p.title, p.content, c.name as categoryName, u.user_name, p.user_id " +
+                        "FROM posts p " +
+                        "INNER JOIN categories c ON p.category_id = c.id " +
+                        "INNER JOIN users u ON p.user_id = u.id " +
                         "ORDER BY date DESC", new BeanPropertyRowMapper(Post.class));
     }
 
     public Post getPostById(int id) {
         List posts = jdbcTemplate.query(
-                "SELECT p.id, p.title, p.content, c.name as categoryName " +
-                        "FROM posts p INNER JOIN categories c ON p.category_id = c.id " +
+                "SELECT p.id, p.title, p.content, c.name as categoryName, u.user_name, p.user_id " +
+                        "FROM posts p " +
+                        "INNER JOIN categories c ON p.category_id = c.id " +
+                        "INNER JOIN users u ON p.user_id = u.id " +
                         "WHERE p.id = ?",
                 new Object[]{id},
                 new BeanPropertyRowMapper(Post.class));
@@ -39,10 +43,23 @@ public class PostDao {
         return (posts.size() > 0 ? (Post) posts.get(0) : null);
     }
 
+
+    public List getPostsByUserId(int id) {
+        return jdbcTemplate.query(
+                "SELECT p.id, p.title, p.content, c.name as categoryName, u.user_name, p.user_id " +
+                        "FROM posts p " +
+                        "INNER JOIN categories c ON p.category_id = c.id " +
+                        "INNER JOIN users u ON p.user_id = u.id " +
+                        "WHERE p.user_id = ? " +
+                        "ORDER BY date DESC ",
+                new Object[]{id},
+                new BeanPropertyRowMapper(Post.class));
+    }
+
     public int insertPost(Post post) {
         return jdbcTemplate.update(
-                "INSERT INTO posts(title, content, category_id) VALUES (?, ?, ?)",
-                post.getTitle(), post.getContent(), post.getCategoryId());
+                "INSERT INTO posts(title, content, category_id, user_id, date) VALUES (?, ?, ?, ?, ?)",
+                post.getTitle(), post.getContent(), post.getCategoryId(), post.getUserId(), post.getDate());
     }
 
 

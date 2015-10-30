@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -27,6 +30,9 @@ public class UserController {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    Authentication loggedInUser;
+
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String getUsersListView(Model model) {
         model.addAttribute("users", userDao.getUsers());
@@ -44,21 +50,22 @@ public class UserController {
     public String newUserForm(@PathVariable String email, Model model) {
 
         User existingUser = userDao.getUserByEmail(email);
-        System.out.println(email);
-        System.out.println(existingUser);
+
         if (existingUser == null) {
             User user = new User();
             user.setEmail(email);
             model.addAttribute("user", user);
             return "user/new_user";
         } else {
+
             model.addAttribute("user", existingUser);
+            loggedInUser.setLoggedInUser(existingUser);
             return "user/user_logged_in";
         }
 
     }
 
-    @RequestMapping(value = "/newuser", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/newuser", method = RequestMethod.POST)
     public @ResponseBody
     User newUserSubmit(@ModelAttribute User user) {
 
@@ -66,7 +73,7 @@ public class UserController {
                 "INSERT INTO users(user_name) VALUES (?)", new Object[]{user.getUserName()});
 
         return user;
-    }
+    }*/
 
 
     @RequestMapping(value = "/userLoggedIn/{email}", method = RequestMethod.GET)
@@ -114,9 +121,10 @@ public class UserController {
         user.setRoleId(3);
         userDao.insertUser(user);
 
+        loggedInUser.setLoggedInUser(userDao.getUserByEmail(email));
+
         return user;
     }
-
 
 
 }

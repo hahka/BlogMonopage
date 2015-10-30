@@ -26,6 +26,14 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
                 $scope.mainDynamic = result;
             });
 
+            $scope.home = function () {
+                myServiceAsync.getHTML.setUrl("posts");
+                var myDataPromise = myServiceAsync.getHTML();
+                myDataPromise.then(function (result) {  // this is only run after $http completes
+                    $scope.mainDynamic = result;
+                });
+            };
+
             $scope.addNewPostForm = function () {
 
                 myServiceAsync.getHTML.setUrl("newpost");
@@ -39,6 +47,16 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
             $scope.postDetails = function (e) {
 
                 myServiceAsync.getHTML.setUrl("postdetails/" + $(e.target).attr("id"));
+                var myDataPromise = myServiceAsync.getHTML();
+                myDataPromise.then(function (result) {  // this is only run after $http completes
+                    $scope.mainDynamic = result;
+                });
+
+            }
+
+            $scope.postsByUserId = function (e) {
+
+                myServiceAsync.getHTML.setUrl("postsByUserId/" + $(e.target).attr("id"));
                 var myDataPromise = myServiceAsync.getHTML();
                 myDataPromise.then(function (result) {  // this is only run after $http completes
                     $scope.mainDynamic = result;
@@ -62,11 +80,17 @@ monoBlogControllers.controller('MainController', ['$scope', '$http', '$sce', '$w
 monoBlogControllers.controller('NewPostController',
     ['$scope', '$rootScope', '$http', '$sce', '$window', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
         function ($scope, $rootScope, $http, $sce, $window, transformRequestAsFormPost, appScopes, myServiceAsync) {
+
+            $scope.reset = function () {
+                $scope.form = angular.copy({});
+            };
+
             $scope.submit = function () {
 
                 var title = $scope.form.title;
                 var categoryId = $scope.form.categoryId;
                 var content = $scope.form.content;
+                var userId = $scope.form.userId;
 
                 if (title && content && categoryId) {
 
@@ -77,7 +101,8 @@ monoBlogControllers.controller('NewPostController',
                         data: {
                             title: title,
                             categoryId: categoryId,
-                            content: content
+                            content: content,
+                            userId: userId
                         }
                     };
                     $http(req).then(
@@ -93,7 +118,7 @@ monoBlogControllers.controller('NewPostController',
                         });
 
                 } else {
-                    $window.alert("ko");
+                    //$window.alert("ko");
                 }
 
             };
@@ -104,6 +129,11 @@ monoBlogControllers.controller('NewPostController',
 monoBlogControllers.controller('NewCommentController',
     ['$scope', '$rootScope', '$http', '$sce', 'transformRequestAsFormPost', 'appScopes', 'myServiceAsync',
         function ($scope, $rootScope, $http, $sce, transformRequestAsFormPost, appScopes, myServiceAsync) {
+
+            $scope.reset = function () {
+                $scope.form = angular.copy({});
+            };
+
             $scope.submit = function (e) {
 
                 var content = $scope.form.content;
@@ -141,7 +171,7 @@ monoBlogControllers.controller('NewCommentController',
                         });
 
                 } else {
-                    $window.alert("ko");
+                    //$window.alert("ko");
                 }
 
             };
@@ -152,6 +182,11 @@ monoBlogControllers.controller('NewCommentController',
 monoBlogControllers.controller('NewUserController',
     ['$scope', '$rootScope', '$http', '$sce', '$window', 'transformRequestAsFormPost', 'myServiceAsync',
         function ($scope, $rootScope, $http, $sce, $window, transformRequestAsFormPost, myServiceAsync) {
+
+            $scope.reset = function () {
+                $scope.form = angular.copy({});
+            };
+
             $scope.submit = function (e) {
 
                 var username = $scope.form.username;
@@ -182,9 +217,7 @@ monoBlogControllers.controller('NewUserController',
                         });
 
                 } else {
-                    $window.alert(username);
-                    $window.alert(email);
-                    $window.alert("ko");
+                    //$window.alert("ko");
                 }
 
             };

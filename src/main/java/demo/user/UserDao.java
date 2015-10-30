@@ -38,6 +38,17 @@ public class UserDao {
         return (users.size() > 0 ? (User) users.get(0) : null);
     }
 
+    public User getUserById(long id) {
+        List users = jdbcTemplate.query(
+                "SELECT user_name " +
+                        "FROM users u " +
+                        "WHERE u.id = ?",
+                new Object[]{id},
+                new BeanPropertyRowMapper(User.class));
+
+        return (users.size() > 0 ? (User) users.get(0) : null);
+    }
+
     public int insertUser(User user) {
         return jdbcTemplate.update(
                 "INSERT INTO users(email, user_name, role_id) VALUES (?, ?, ?)",
@@ -50,6 +61,17 @@ public class UserDao {
                         "FROM users u " +
                         "WHERE u.email = ?",
                 new Object[]{email},
+                new BeanPropertyRowMapper(User.class));
+
+        return (users.size() > 0 ? (User) users.get(0) : null);
+    }
+
+    public User getUserByUserName(String username) {
+        List users = jdbcTemplate.query(
+                "SELECT user_name, id, email, role_id " +
+                        "FROM users u " +
+                        "WHERE u.user_name = ?",
+                new Object[]{username},
                 new BeanPropertyRowMapper(User.class));
 
         return (users.size() > 0 ? (User) users.get(0) : null);

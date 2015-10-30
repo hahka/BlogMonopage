@@ -4,10 +4,11 @@
       xmlns="http://www.w3.org/1999/xhtml">
 
 <div th:fragment="post_item">
-    <p th:text="${post.id}">1</p>
-    <a th:text="${post.title}" th:id="${post.id}">Un simple post</a>
+    <h2 th:text="${post.title}" th:id="${post.id}">Un simple post</h2>
 
-    <p th:text="${post.categoryName}">Voyage</p>
+    <div>Catégorie :
+        <div class="inline" th:text="${post.categoryName}"></div>
+    </div>
 
     <p th:text="${post.content}">Blablabla blablabla</p>
 </div>

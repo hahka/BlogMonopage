@@ -1,6 +1,14 @@
-<div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="post_item">
-    <td th:text="${post.id}">1</td>
-    <a th:text="${post.title}" th:id="${post.id}" ng-click="postDetails($event)">Un simple post</a>
-    <td th:text="${post.categoryName}">Voyage</td>
-    <td th:text="${post.content}">Blablabla blablabla</td>
-</div>
+<article xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="post_item">
+    <div>
+        <h3><a th:text="${post.title}" th:id="${post.id}" ng-click="postDetails($event)">Titre article 2</a></h3>
+        <h6>écrit par <a th:text="${post.userName}" th:id="${post.userId}" ng-click="postsByUserId($event)">Thibaut</a>
+            le
+            <div class="inline" th:text="${post.date}">25 Oc</div>
+        </h6>
+    </div>
+    <br/>
+
+    <div>
+        <p th:text="${post.content}">contenu article 2</p>
+    </div>
+</article>
