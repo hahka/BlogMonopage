@@ -2,7 +2,7 @@
 
 ### Thibaut VIROLLE & Paul-Henri GUENARD - ESIEA 5A
 ---
-###Installation
+###Installation/Utilisation
 
 Le projet est en ligne à l'adresse suivante : https://damp-brushlands-1484.herokuapp.com/
 
